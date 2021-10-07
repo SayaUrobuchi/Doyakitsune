@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+<title>黒鯖９９</title>
+<style>
+body
+{
+	background-color: #000;
+	color: #CCC;
+	text-align: center;
+}
+
+.single
+{
+	display: inline-block;
+	height: 64px;
+	width: 64px;
+	border: 1px;
+}
+
+#button
+{
+	margin: 16px;
+}
+</style>
+<script>
+const KAKOI = [ {x: -1, y: -1}, {x: -1, y: 0}, {x: -1, y: 1}, 
+				{x: 0, y: -1}, {x: 0, y: 0}, {x: 0, y: 1}, 
+				{x: 1, y: -1}, {x: 1, y: 0}, {x: 1, y: 1}, ];
+const CROSS = [ {x: 1, y: 0}, {x: -1, y: 0}, {x: 0, y: -1}, {x: 0, y: 1}, {x: 0, y: 0}, ];
+const CROSS_T = 0;
+const KAKOI_T = 1;
+const TALK2_LIST = [
+	"なーんだ、これでさえ無理なのー？あーりえねー", 
+	"チッ、もうちょっとイイモノ出せぬか", 
+	"まったく、そこまで言われたらしょうがないな～解けてあげよっか～", 
+	"フハハハハハ、この狐にかかれば楽勝楽勝！", 
+	"もう終わりー？もっと歯ごたえのあるパズルがいいなー", 
+];
+var disp_ary, chk_ary;
+var typ, way;
+
+function get_input()
+{
+	disp_ary = document.getElementsByClassName("display");
+	chk_ary = document.getElementsByClassName("chk");
+	typ = document.querySelector('input[name="typ"]:checked').value;
+	if (typ == CROSS_T)
+	{
+		way = CROSS;
+	}
+	else
+	{
+		way = KAKOI;
+	}
+}
+
+function solved(board)
+{
+	var res = true;
+	for (var x=0; x<3&&res; x++)
+	{
+		for (var y=0; y<3&&res; y++)
+		{
+			if (!board[x][y])
+			{
+				res = false;
+			}
+		}
+	}
+	return res;
+}
+
+function solve()
+{
+	get_input();
+	var best = 10;
+	var ans = -1;
+	for (var i=0; i<512; i++)
+	{
+		var board = [[], [], []];
+		for (var x=0; x<3; x++)
+		{
+			for (var y=0; y<3; y++)
+			{
+				board[x][y] = chk_ary[x*3+y].checked;
+			}
+		}
+		var count = 0;
+		for (var x=0; x<3; x++)
+		{
+			for (var y=0; y<3; y++)
+			{
+				t = ((i & (1<<(x*3+y))) != 0);
+				if (t)
+				{
+					++count;
+					for (var k=0; k<way.length; k++)
+					{
+						tx = x + way[k].x;
+						ty = y + way[k].y;
+						if (tx >= 0 && tx < 3 && ty >= 0 && ty < 3)
+						{
+							board[tx][ty] = !board[tx][ty];
+						}
+					}
+				}
+			}
+		}
+		if (solved(board))
+		{
+			if (count < best)
+			{
+				best = count;
+				ans = i;
+			}
+		}
+	}
+	show_ans(ans);
+	show_rand_talk2();
+}
+
+function show_ans(ans)
+{
+	for (var i=0; i<9; i++)
+	{
+		disp_ary[i].innerHTML = (ans & (1<<i)) ? "踏み" : "　";
+	}
+}
+
+function show_rand_talk2()
+{
+	var talk2 = document.getElementById("talk2");
+	talk2.innerHTML = TALK2_LIST[Math.floor(Math.random() * TALK2_LIST.length)];
+}
+</script>
+</head>
+
+<body>
+	<div id="header"><h1>ドヤ狐ちゃん</h1><hr></div>
+	<div id="talk1">この狐に解けぬものは、あんまりない！<br />まぁ、貴様らにはちょっと無理かの～？</div>
+	<div id="main">
+		<div class="row">
+			<div class="single">
+				<div class="display">　
+				</div>
+				<div class="select">
+					<input class="chk" type="checkbox" />
+				</div>
+			</div>
+			<div class="single">
+				<div class="display">　
+				</div>
+				<div class="select">
+					<input class="chk" type="checkbox" />
+				</div>
+			</div>
+			<div class="single">
+				<div class="display">　
+				</div>
+				<div class="select">
+					<input class="chk" type="checkbox" />
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="single">
+				<div class="display">　
+				</div>
+				<div class="select">
+					<input class="chk" type="checkbox" />
+				</div>
+			</div>
+			<div class="single">
+				<div class="display">　
+				</div>
+				<div class="select">
+					<input class="chk" type="checkbox" />
+				</div>
+			</div>
+			<div class="single">
+				<div class="display">　
+				</div>
+				<div class="select">
+					<input class="chk" type="checkbox" />
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="single">
+				<div class="display">　
+				</div>
+				<div class="select">
+					<input class="chk" type="checkbox" />
+				</div>
+			</div>
+			<div class="single">
+				<div class="display">　
+				</div>
+				<div class="select">
+					<input class="chk" type="checkbox" />
+				</div>
+			</div>
+			<div class="single">
+				<div class="display">　
+				</div>
+				<div class="select">
+					<input class="chk" type="checkbox" />
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="option">
+		<label>十</label><input type="radio" name="typ" value="0" />
+		<label>米</label><input type="radio" name="typ" value="1" checked />
+	</div>
+	<button id="button" onclick="solve();">イイモノ供えて狐ちゃんに祈りを捧げよう</button>
+	<div id="talk2"></div>
+</body>
+
+</html>
